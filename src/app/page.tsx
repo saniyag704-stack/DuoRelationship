@@ -12,6 +12,8 @@ import { DecodePreview } from "@/components/decode/DecodePreview";
 import { SoftenerPreview } from "@/components/rewrite/SoftenerPreview";
 import { SyncPreview } from "@/components/sync/SyncPreview";
 
+import { SecurityBadge } from "@/components/layout/SecurityBadge";
+
 export default function HomeDashboard() {
   const { activeTab, hasRealActivity, isHydrated } = useRelationship();
 
@@ -39,6 +41,9 @@ export default function HomeDashboard() {
   // Default: Home Tab (Relationship Pulse & Daily Connection)
   return (
     <div className="space-y-6 sm:space-y-8 pb-24">
+      {/* Prominent Trust-First Architecture Security Badge */}
+      <SecurityBadge />
+
       {/* If Brand New User: Show Non-Fake Honest Welcome State */}
       {!hasRealActivity && <EmptyStateBanner />}
 
