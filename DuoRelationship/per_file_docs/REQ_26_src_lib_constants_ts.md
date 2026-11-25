@@ -3,7 +3,7 @@
 
 > **File Path:** `src/lib/constants.ts`  
 > **Layer:** `Data & Library` · **Category:** `Library`  
-> **Lines of Code:** 120 lines · **Size:** 6.53 KB · **Status:** Production Verified ✅
+> **Lines of Code:** 146 lines · **Size:** 8.08 KB · **Status:** Production Verified ✅
 
 ---
 
@@ -126,35 +126,61 @@ export const COUPLE_VIBE_ARCHETYPES: CoupleVibeCard[] = [
 export const SAMPLE_CHATS = [
   {
     id: "chat-sample-angry-hinglish",
-    label: "🔥 Angry Mode: 'Achha Thik Hai / Jaao Doston Ke Paas'",
+    label: "🔥 Angry Mode: Cancelled Weekend / Friends vs Me",
+    mode: "angry_fight" as const,
     language: "hinglish",
-    rawText: `Partner: "Tumhe toh bas apne kaam aur doston se matlab hai. 'Achha thik hai, koi baat nahi', main hi hamesha overreact karti hoon na? Jaao unhi ke paas, mujhe akele chhod do."
-You: "Yaar office mein kitna pressure tha pata bhi hai? Har chhoti baat ka mudda banana band karo please."`,
-    subtext: "'Achha thik hai / Jaao apne doston ke paas' means: 'I feel exhausted and unseen. I am tired of explaining my loneliness, please just pull me close and tell me I am still your priority.'",
+    rawText: `Partner: "Tumne phir se weekend plan cancel kar diya na? 'Achha thik hai, koi baat nahi', jaao apne doston ke saath hi party karo. Mera toh waise bhi koi scene nahi hai tumhari life mein."
+You: "Yaar unhone bohot pehle plan banaya tha! Tum har baar drama kyu create karti ho?"`,
+    subtext: "'Jaao apne doston ke saath' means: 'I felt so discarded when our plans got bumped. I am exhausted of feeling like your second choice behind everyone else.'",
   },
   {
-    id: "chat-sample-1",
-    label: "Hinglish Work Stress Misunderstanding",
+    id: "chat-sample-dry-reply",
+    label: "🤔 Overthinking: The 1-Word 'K / Hmm / Thik Hai' Freeze",
+    mode: "overthinking_dry" as const,
     language: "hinglish",
-    rawText: `Partner: "Tum hamesha late aate ho aur reply bhi nahi karte. Did you even care ki main 8 PM se wait kar rahi thi? Forget it, do whatever you want."
-You: "Main meeting mein tha na! Har baar drama shuru kar deti ho bina samjhe."`,
-    subtext: "Partner is not actually angry about the clock; they are experiencing feeling unconsidered, depleted, and disconnected after anticipating quality time all day.",
+    rawText: `You: "Hey baby, kaisa tha din? Main soch raha tha aaj dinner pe kahi bahar chalein saath mein ❤️"
+Partner: "k"
+You: "Kuch hua hai kya? Sab theek?"
+Partner: "haan sab thik hai. mujhe kaam hai abhi."`,
+    subtext: "'k / sab thik hai' means: 'Something hurt me earlier and I am silently testing whether you will notice my quiet withdrawal or simply ignore it.'",
   },
   {
-    id: "chat-sample-2",
-    label: "English Passive-Aggressive 'Fine'",
-    language: "en",
-    rawText: `Partner: "Fine. Whatever. Go with your friends, I'll figure dinner out myself."
-You: "Why are you being like this? You literally said it was okay yesterday."`,
-    subtext: "The 'Fine' mask is concealing an anxious bid for reassurances. They wanted to feel chosen or prioritized, not dismissed.",
+    id: "chat-sample-misunderstanding",
+    label: "💔 Misunderstanding: Innocent Comment Taken as Criticism",
+    mode: "misunderstanding" as const,
+    language: "hinglish",
+    rawText: `You: "Aise kapde pehen ke jaa rahe ho kya function mein? Thoda simple nahi lag raha?"
+Partner: "Matlab tumhe hamesha mere dressing sense mein kami hi dikhti hai na? Theek hai, main jaa hi nahi rahi function mein, tum akele jao."
+You: "Arrey main bas normal puch raha tha, itna hyper kyu ho rahi ho?!"`,
+    subtext: "A casual query triggered a deep core wound of: 'You are embarrassed of me, and you don't find me attractive or adequate.'",
   },
   {
-    id: "chat-sample-3",
-    label: "Hinglish Silent Treatment ('Baat karne ka koi fayda nahi')",
+    id: "chat-sample-chores-load",
+    label: "🧹 Friction: Unequal Mental Load & Chores",
+    mode: "angry_fight" as const,
     language: "hinglish",
-    rawText: `Partner: "Mujhe ab koi baat nahi karni. Baat karne ka koi fayda nahi hota waise bhi."
-You: "Theek hai, main hi chup ho jata hoon phir."`,
-    subtext: "'Baat karne ka koi fayda nahi' means: 'I feel unheard and exhausted from defending my hurt. Please listen with pure warmth instead of giving logical justifications.'",
+    rawText: `Partner: "Main subah se akele hi poora ghar aur grocery sambhal rahi hoon. Tum bas sofe pe baith ke reels scroll kar rahe ho. Main tumhari maid nahi hoon!"
+You: "Main din bhar office mein thak ke aaya hoon! 10 minute aaram bhi nahi kar sakta kya?"`,
+    subtext: "'Main tumhari maid nahi hoon' means: 'I am drowning under the invisible mental load. I don't just want physical help; I need to feel like you care about my exhaustion.'",
+  },
+  {
+    id: "chat-sample-jealousy",
+    label: "👀 Overthinking: Midnight Online Activity / Insecurity",
+    mode: "overthinking_dry" as const,
+    language: "hinglish",
+    rawText: `Partner: "Tum kal raat 2 AM tak WhatsApp pe online kisse baat kar rahe the? Mujhse toh bola tha 12 baje neend aa rahi hai."
+You: "Arrey college ke group mein friends meme bhej rahe the! Ab kya main group chats bhi na dekhu? Tumhara shak badhta hi jaa raha hai."`,
+    subtext: "'Online kisse baat kar rahe the' means: 'My anxious attachment was triggered by the mismatch in your words. I am terrified of losing your emotional exclusivity.'",
+  },
+  {
+    id: "chat-sample-vibe-flirt",
+    label: "✨ Vibe Check: Soft Mid-Day Connection Check",
+    mode: "just_vibe" as const,
+    language: "hinglish",
+    rawText: `Partner: "Bohot hectic day hai office mein aaj... mann hi nahi lag raha kaam mein bilkul 🥱"
+You: "Mera bhi yahi haal hai, bas 6 PM hone ka wait kar raha hoon."
+Partner: "Phir shaam ko kya program hai hamara? Ya phir se phone mein lage rahoge?"`,
+    subtext: "'Phir se phone mein lage rahoge?' is an affectionate bid for undivided attention and romance after an exhausting workday.",
   },
 ];
 

@@ -90,11 +90,11 @@ async function runTestSuite() {
 
     // Verify 5 Sections
     const decodedBody = await page.textContent('body');
-    const hasSection1 = decodedBody.includes('Shaant Ho Jaaiye') || decodedBody.includes('Ek gehri saans');
-    const hasSection2 = decodedBody.includes('Surface Emotion') || decodedBody.includes('Gussa');
-    const hasSection3 = decodedBody.includes('The Trap') || decodedBody.includes('dimag mein');
-    const hasSection4 = decodedBody.includes('Option 1') || decodedBody.includes('Option 2');
-    const hasSection5 = decodedBody.includes('Golden');
+    const hasSection1 = decodedBody.includes('Shaant Ho Jaaiye') || decodedBody.includes('Ek gehri saans') || decodedBody.includes('Breathe Deeply');
+    const hasSection2 = decodedBody.includes('Surface') || decodedBody.includes('Emotional X-Ray') || decodedBody.includes('Bahar Se Kya Dikh Raha Hai');
+    const hasSection3 = decodedBody.includes('The Trap') || decodedBody.includes('dimag mein') || decodedBody.includes('Dimaag');
+    const hasSection4 = decodedBody.includes('Option 1') || decodedBody.includes('Option 2') || decodedBody.includes('Magic Replies');
+    const hasSection5 = decodedBody.includes('Golden') || decodedBody.includes('Iss Waqt Ka Golden Niyam');
 
     // Screenshot Decode Results
     const decodeShot = path.join(SCREENSHOT_DIR, '02_decode_xray_results.png');

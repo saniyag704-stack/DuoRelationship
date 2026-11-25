@@ -3,7 +3,7 @@
 
 > **File Path:** `src/components/decode/DecodePreview.tsx`  
 > **Layer:** `Feature Component` · **Category:** `UI Component`  
-> **Lines of Code:** 793 lines · **Size:** 36.11 KB · **Status:** Production Verified ✅
+> **Lines of Code:** 824 lines · **Size:** 37.19 KB · **Status:** Production Verified ✅
 
 ---
 
@@ -80,6 +80,7 @@ export function DecodePreview() {
   const [inputMode, setInputMode] = useState<"screenshot" | "text">("screenshot");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [chatText, setChatText] = useState("");
+  const [contextNote, setContextNote] = useState("");
   const [selectedContext, setSelectedContext] = useState<QuickContextTag>("angry_fight");
   const [selectedLanguageOverride, setSelectedLanguageOverride] = useState<"auto" | "hinglish" | "en">("auto");
   const [selectedSample, setSelectedSample] = useState<string | null>(null);
@@ -112,7 +113,9 @@ export function DecodePreview() {
         setChatText(sample.rawText);
         setSelectedSample(sample.id);
         setInputMode("text");
-        setSelectedContext("angry_fight");
+        if (sample.mode) {
+          setSelectedContext(sample.mode);
+        }
       }
       clearSelectedSampleChat();
     }
@@ -139,7 +142,9 @@ export function DecodePreview() {
       setSelectedSample(sample.id);
       setImagePreview(null);
       setInputMode("text");
-      setSelectedContext("angry_fight");
+      if (sample.mode) {
+        setSelectedContext(sample.mode);
+      }
       setResult(null);
     }
   };
@@ -150,13 +155,13 @@ export function DecodePreview() {
     setSelectedSample(demo.id);
     setImagePreview(null);
     setInputMode("text");
-    setSelectedContext("angry_fight");
+    setSelectedContext(demo.mode || "angry_fight");
     setSelectedLanguageOverride("hinglish");
     setResult(null);
   };
 
   const handleRunDecode = async () => {
-    if (!imagePreview && !chatText.trim()) return;
+    if (!imagePreview && !chatText.trim() && !contextNote.trim()) return;
 
     setIsAnalyzing(true);
     setResult(null);
@@ -174,6 +179,7 @@ export function DecodePreview() {
         body: JSON.stringify({
           image: imagePreview || undefined,
           text: chatText || undefined,
+          contextNote: contextNote.trim() || undefined,
           contextTag: selectedContext,
           targetLanguage: selectedLanguageOverride,
           userApiKey: userApiKey || undefined,
@@ -472,12 +478,37 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
         </div>
       )}
 
+      {/* Optional Context Note (Prior context or highlighted lines) */}
+      <div className="rounded-xl border border-gold-500/20 bg-obsidian-900/60 p-3 space-y-1.5 shadow-sm">
+        <label className="text-[11px] font-semibold text-zinc-300 flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-gold-300">
+            <span>💡</span>
+            <span>Optional Context Note (What happened right before this chat?):</span>
+          </span>
+          {contextNote && (
+            <button
+              onClick={() => setContextNote("")}
+              className="text-[10px] text-zinc-500 hover:text-rose-400 transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </label>
+        <input
+          type="text"
+          value={contextNote}
+          onChange={(e) => setContextNote(e.target.value)}
+          placeholder="e.g. He cancelled weekend plans last minute; or She has been replying with just 'k' since morning..."
+          className="w-full rounded-lg bg-obsidian-950 border border-white/10 px-3 py-2 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-gold-500/50"
+        />
+      </div>
+
       {/* Scenario Pills */}
       <div className="space-y-2">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 block">
           Or Select Any Realistic Couple Scenario:
         </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {SAMPLE_CHATS.map((sample) => (
             <button
               key={sample.id}
@@ -506,7 +537,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
       <div className="flex items-center justify-center pt-2">
         <button
           onClick={handleRunDecode}
-          disabled={(!imagePreview && !chatText.trim()) || isAnalyzing}
+          disabled={(!imagePreview && !chatText.trim() && !contextNote.trim()) || isAnalyzing}
           className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-500 via-gold-500 to-gold-400 text-obsidian-950 font-bold text-base hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-gold-glow flex items-center justify-center gap-3 border border-gold-200/40"
         >
           {isAnalyzing ? (
@@ -636,7 +667,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
                 Unki Sabse Badi Emotional Need (Core Need)
               </span>
               <p className="text-xs sm:text-sm text-zinc-100 font-medium leading-relaxed">
-                {result.emotional_xray?.core_need || result.core_need || "Woh aapse ladna nahi chahte; woh bas yeh feel karna chahte hain ki busy life mein bhi woh aapki #1 priority hain."}
+                {result.emotional_xray?.core_need || result.core_need || "Woh aapse ladna nahi chahte; unhe bas yeh mehsoos karna hai ki busy life mein bhi unki feelings ki qadar hai."}
               </p>
             </div>
           </div>
@@ -650,7 +681,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
                   Unhone Kya Kaha (What They Said Literally)
                 </span>
                 <p className="text-xs sm:text-sm text-zinc-200 italic font-mono bg-obsidian-900/80 p-3 rounded-xl border border-white/5 leading-relaxed">
-                  "{result.psychology_decode?.what_they_said || "Tumhe toh bas apne kaam aur doston se matlab hai. 'Achha thik hai, koi baat nahi', jaao unhi ke paas."}"
+                  "{result.psychology_decode?.what_they_said || "Dialogue quote from your chat"}"
                 </p>
               </div>
 
@@ -660,7 +691,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
                   Unke Dimaag Mein Asal Mein Kya Hai (What's In Their Mind)
                 </span>
                 <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-light">
-                  {result.psychology_decode?.whats_in_their_mind || "Jab Indian relationships mein partner bolta hai 'Achha thik hai, jaao apne doston/kaam ke paas', toh yeh dismissal nahi balki ek wounded protest bid hai. In their mind: 'Mujhe baar-baar importance maangna exhausting lagta hai, I just want you to choose me without me asking.'"}
+                  {result.psychology_decode?.whats_in_their_mind || "Unke gusse ya cold reply ke peeche chhipa hua unexpressed vulnerability aur emotional safety ki craving."}
                 </p>
               </div>
             </div>
@@ -675,7 +706,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
                   ⚠️ Yeh Galti Abhi Mat Kijiye (The Trap — Do NOT Reply This)
                 </span>
                 <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
-                  {result.psychology_decode?.the_trap || result.the_trap || "Abhi galti se bhi office meetings, traffic ke excuses ya 'Har baar tum drama shuru kar deti ho' mat bolna. Logic during emotional flooding feels like rejection and turns a 10-minute sulk into a 3-day cold war."}
+                  {result.psychology_decode?.the_trap || result.the_trap || "Defensive hokar logic ya counter-arguments mat do. Aise emotional moment par logic rejection jaisa lagta hai."}
                 </p>
               </div>
             </div>
@@ -757,7 +788,7 @@ You: "Yaar office mein itna pressure tha! Har baat ka mudda kyu banate ho?"`}
                 Iss Waqt Ka Golden Niyam (Golden Action Tip)
               </span>
               <p className="text-xs sm:text-sm text-zinc-100 font-medium leading-relaxed">
-                {result.golden_action_tip || result.golden_rule || "Iss waqt logic nahi, reassurance chahiye: Abhi excuses mat do ki aap kyun busy the. Pehle unka dil shaant hone do; explanations can wait till tomorrow."}
+                {result.golden_action_tip || result.golden_rule || "Connection over correctness: Pehle partner ke emotional flooding ko shanti se acknowledge karein, logic aur clarification baad mein bhi ho sakta hai."}
               </p>
             </div>
           </div>

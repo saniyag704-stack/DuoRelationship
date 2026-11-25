@@ -3,7 +3,7 @@
 
 > **File Path:** `.gitignore`  
 > **Layer:** `Security & VCS` · **Category:** `Configuration`  
-> **Lines of Code:** 38 lines · **Size:** 0.32 KB · **Status:** Production Verified ✅
+> **Lines of Code:** 44 lines · **Size:** 0.44 KB · **Status:** Production Verified ✅
 
 ---
 
@@ -61,8 +61,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# environment variables and API keys (STRICTLY PRIVATE - NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+!.env.example
 
 # typescript
 *.tsbuildinfo
