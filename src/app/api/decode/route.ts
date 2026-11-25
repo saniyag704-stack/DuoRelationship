@@ -371,24 +371,33 @@ function generateDynamicPsychologicalInference(
 
   let domain: TopicDomain = "general_frustration";
 
-  if (/cancel|plan|weekend|dinner|trip|dost|friends|party|unhi ke/i.test(lower)) {
-    domain = "cancellation_plans";
-  } else if (/\b(k|ok|hmm|hmmm|haan)\b|dry reply|seen|delivered|rehne do|thik hai/i.test(lower) && (contextTag === "overthinking_dry" || lower.length < 80)) {
+  // Check 1: Dry / Cold 1-word freeze (checked first to catch "k", "hmm", "haan", etc.)
+  if (
+    /^(k|ok|hmm|hmmm|haan|fine|thik hai|theek hai|k\.)$/i.test(partnerQuote.trim()) ||
+    (contextTag === "overthinking_dry" && (partnerQuote.length <= 25 || /\b(k|hmm|dry|aloof|seen|delivered)\b/i.test(lower)))
+  ) {
     domain = "dry_reply_cold";
-  } else if (/kapde|dressing|function|kam|kami|critic|shakal|simple|look|kharab/i.test(lower) || contextTag === "misunderstanding") {
-    domain = "misunderstanding_criticism";
-  } else if (/maid|ghar|safai|grocery|chores|kaam|akele|scroll|reels|manager|responsib/i.test(lower)) {
-    domain = "effort_chores_load";
-  } else if (/online|2 am|kisse|kiske|chat|insta|whatsapp pe|shak|hide|delete/i.test(lower)) {
+  } else if (contextTag === "just_vibe" || /vibe|shaam|program|hug|miss you|sweet|hectic|office.*mann|mann hi nahi lag/i.test(lower)) {
+    // Check 2: Vibe / Affection / Mid-day warmth check
+    domain = "vibe_affection";
+  } else if (/online|2 am|kisse|kiske|chat|insta|whatsapp pe|shak|hide|delete|ex\b/i.test(lower)) {
+    // Check 3: Jealousy / Trust / Late night online
     domain = "jealousy_trust";
+  } else if (/maid|ghar ka kaam|poora ghar|safai|grocery|chores|bartan|akele.*sambhal|scroll|reels/i.test(lower)) {
+    // Check 4: Chores / Division of Labor / Mental load
+    domain = "effort_chores_load";
+  } else if (/kapde|dressing|function|kam|kami|critic|shakal|simple|look|kharab/i.test(lower) || contextTag === "misunderstanding") {
+    // Check 5: Misunderstanding / Criticizing appearance or efforts
+    domain = "misunderstanding_criticism";
+  } else if (/cancel|postpone|plan cancel|weekend plan|doston ke saath hi party|friends ke saath/i.test(lower)) {
+    // Check 6: Cancelled plans / Friends prioritized over partner
+    domain = "cancellation_plans";
   } else if (/late|wait|8 pm|ghanta|intezaar|der|time nahi|busy/i.test(lower)) {
     domain = "time_late_waiting";
   } else if (/baat nahi karni|fayda nahi|chup|chhod do|mat karo|block/i.test(lower)) {
     domain = "silent_treatment";
   } else if (/chillao|tameez|gussa|awaaz|drama|bakwaas|bolne ka/i.test(lower)) {
     domain = "respect_tone";
-  } else if (contextTag === "just_vibe" || /vibe|shaam|program|hug|miss|sweet/i.test(lower)) {
-    domain = "vibe_affection";
   }
 
   // 3. SYNTHESIZE DOMAIN + MODE SPECIFIC DECODE
@@ -578,6 +587,40 @@ function buildHinglishDecode(
           },
         ],
         golden_action_tip: "Transparency disarms jealousy. Do not fight for privacy when what they need is emotional safety.",
+      };
+
+    case "vibe_affection":
+      return {
+        privacy_notice: "100% Private & Encrypted · Yeh chat server par save nahi ki gayi hai.",
+        calm_banner: "Yeh koi ladai nahi hai; yeh mid-day connection ki ek pyaari si emotional bid hai. Unhe aapke warm attention ki zaroorat hai.",
+        emotional_xray: {
+          surface_emotion: { label: "Tiredness & Craving Distraction 🥱", percentage: 70 },
+          hidden_emotion: { label: "Desire for Comfort, Warmth & Your Voice ✨", percentage: 95 },
+          core_need: "Unhe routine se thoda break aur aapki taraf se comforting romantic attention chahiye.",
+        },
+        psychology_decode: {
+          what_they_said: quotedDisplay,
+          whats_in_their_mind: "Jab partner busy din mein bolta hai 'Mann nahi lag raha' ya 'Bohot hectic hai', yeh kaam ki complaint nahi hoti. It is a soft bid for emotional co-regulation: 'Remind me that you are thinking of me.'",
+          the_trap: "Galti se bhi advice-giving boss mode mein mat aana: 'Focus karo kaam pe, jaldi khatam ho jayega'. Unhe lecture nahi, warm empathy chahiye.",
+        },
+        magic_replies: [
+          {
+            badge: "Option 1: Warm Mid-Day Co-Regulation (Most Sweet)",
+            reply_text: "Aww mere mehnati partner ❤️ Kaam thoda side mein karo for 2 minutes, take a deep breath. Main evening mein sab ready rakhunga so you can completely unwind with me.",
+            why_it_works: "Provides instant relief and romantic anticipation, rewarding their vulnerability.",
+          },
+          {
+            badge: "Option 2: Playful Energy Boost",
+            reply_text: "Bas thodi der aur! Evening date is officially scheduled. Sending you a cup of virtual hot chocolate and infinite hugs right now ✨",
+            why_it_works: "Injects lightness and affectionate support into their workday fatigue.",
+          },
+          {
+            badge: "Option 3: Quick 60-Second Voice Call Bid",
+            reply_text: "Meri favorite insaan ka mood low hai aur main kuch na karu? Free ho toh can I call for 1 minute just to tell you how proud I am of you?",
+            why_it_works: "Prioritizes real-time vocal reassurance, turning a mundane afternoon into an intimacy win.",
+          },
+        ],
+        golden_action_tip: "Turn towards their bid: Mid-day fatigue par solution nahi, bas 2 lines ka unconditional pyaar chahiye hota hai.",
       };
 
     default: // general_frustration / time / respect
